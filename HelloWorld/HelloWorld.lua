@@ -7,22 +7,30 @@ DPS = {"DD", "DPS", "DMG"}
 Tank = {"TANK"}
 Heal = {"HEAL", "HEALER"}
 
-local f = CreateFrame("Frame", "LFMFrame", UIParent)
+local f = CreateFrame("Frame", "LFMFrame", UIParent, "BackdropTemplate")
 f:SetSize(250,170)
-f:SetPoint("CENTER", -200, 0)
+f:SetPoint("CENTER", UIParent, "CENTER")
+BackdropInfo = {
+	bgFile = "Interface\\Buttons\\WHITE8X8",
+	edgeFile = "Interface\\Buttons\\WHITE8X8",
+	edgeSize = 1.5,
+	insets = { left = 1, right = 1, top = 1, bottom = 1, },
+}
+f:SetBackdrop(BackdropInfo)
+f:SetBackdropColor(0.2,0.14,0,0.87) -- Black background
+f:SetBackdropBorderColor(1,0.769,0.388,1) -- White border
 f:EnableMouse(true)
 f:SetMovable(true)
 f:RegisterForDrag("LeftButton")
---f:SetUserPlaced(true)
---f:SetResizable(true)
---[[
-f:SetMinResize(200,130)
-f:SetMaxResize(500,400)
-]]--
-
+f:SetUserPlaced(true)
+f:SetResizable(true)
+f:SetResizeBounds(200,130,400,400)
+--[[ Old coloring of window
 f.texture = f:CreateTexture()
 f.texture:SetAllPoints(f)
 f.texture:SetColorTexture(0, 0, 0, 0.7)
+]]--
+
 
 f:SetScript("OnDragStart", function(self)
 	self:StartMoving()
@@ -43,6 +51,15 @@ resizeButton:SetPoint("BOTTOMRIGHT")
 resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
 resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+
+resizeButton:SetScript("OnMouseDown", function(self, button)
+    f:StartSizing("BOTTOMRIGHT")
+    f:SetUserPlaced(true)
+end)
+resizeButton:SetScript("OnMouseUp", function(self, button)
+	f:StopMovingOrSizing()
+end)
+ 
  
 --[[
 resizeButton:SetScript("OnMouseDown", function(self, button)
@@ -75,7 +92,7 @@ function f:ADDON_LOADED(_, addOnName)
 end
 
 function PrintInfo()
-    print("List current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL\nHide: !hide\nShow: !show")
+    print("All Commands: !info\nList current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL\nHide: !hide\nShow: !show")
 end
 
 function f:CHAT_MSG_CHANNEL(event, text, playerName)
@@ -160,6 +177,9 @@ function f:CHAT_MSG_SAY(event, text)
     end
     if string.upper(text) == "!HIDE" then
         f:Hide()
+    end
+    if string.upper(text) == "!INFO" then
+        PrintInfo()
     end
 end
 
