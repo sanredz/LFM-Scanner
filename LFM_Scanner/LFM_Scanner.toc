@@ -1,0 +1,7 @@
+## Interface: 100107
+## Version: 1.0.0
+## Title: LFM_Scanner
+## Notes: Scans all channels an filters out LFM messages for you.
+## Author: Sanjin Redzepagic
+
+LFM_Scanner.lua
