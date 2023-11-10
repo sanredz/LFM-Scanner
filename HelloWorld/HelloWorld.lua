@@ -45,6 +45,16 @@ function f:OnEvent(event, ...)
     self[event](self, event, ...)
 end
 
+function f:ADDON_LOADED(_, addOnName)
+    if addOnName == "HelloWorld" then
+        PrintInfo()
+    end
+end
+
+function PrintInfo()
+    print("List current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL")
+end
+
 function f:CHAT_MSG_CHANNEL(event, text, playerName)
 
     if T_length < 9 then
@@ -127,5 +137,6 @@ end
 
 f:RegisterEvent("CHAT_MSG_CHANNEL")
 f:RegisterEvent("CHAT_MSG_SAY")
+f:RegisterEvent("ADDON_LOADED")
 f:SetScript("OnEvent", f.OnEvent)
 
