@@ -25,7 +25,7 @@ f:RegisterForDrag("LeftButton")
 f:SetUserPlaced(true)
 f:SetResizable(true)
 f:SetResizeBounds(200,130,400,400)
---[[ Old coloring of window
+--[[ Old coloring of window, obsolete
 f.texture = f:CreateTexture()
 f.texture:SetAllPoints(f)
 f.texture:SetColorTexture(0, 0, 0, 0.7)
