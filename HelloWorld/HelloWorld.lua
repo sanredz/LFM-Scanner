@@ -75,7 +75,7 @@ function f:ADDON_LOADED(_, addOnName)
 end
 
 function PrintInfo()
-    print("List current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL")
+    print("List current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL\nHide: !hide\nShow: !show")
 end
 
 function f:CHAT_MSG_CHANNEL(event, text, playerName)
@@ -154,6 +154,12 @@ function f:CHAT_MSG_SAY(event, text)
     if string.find(string.upper(text), "!D ") then
         local d = string.gsub(string.upper(text), "!D ", "")
         table.insert(Dungeon_interest, d)
+    end
+    if string.upper(text) == "!SHOW" then
+        f:Show()
+    end
+    if string.upper(text) == "!HIDE" then
+        f:Hide()
     end
 end
 
