@@ -134,15 +134,9 @@ function f:CHAT_MSG_CHANNEL(event, text, playerName)
                     end
                 end
                 if fin2 then
-                    print("WHAT")
                     for j = 1, #Role_interest do
                         for d = 1, #Delim do
                             for dt = 1, #Delim do
-                                local t = string.upper(text)
-                                local rd = Delim[dt]..Role_interest[j]..Delim[d]
-                                print("--TEXT--\n".. t)
-                                print("--Role + Delim--\n".. rd)
-                                print("--ARE THEY SAME?\n".. t == rd)
                                 if string.find(string.upper(text), Delim[dt]..Role_interest[j]..Delim[d]) then
                                     info = info.." : "..Role_interest[j]
                                     T_length = T_length + 1
