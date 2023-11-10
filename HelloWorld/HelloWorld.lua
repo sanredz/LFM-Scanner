@@ -13,7 +13,12 @@ f:SetPoint("CENTER", -200, 0)
 f:EnableMouse(true)
 f:SetMovable(true)
 f:RegisterForDrag("LeftButton")
-f:SetUserPlaced(true)
+--f:SetUserPlaced(true)
+--f:SetResizable(true)
+--[[
+f:SetMinResize(200,130)
+f:SetMaxResize(500,400)
+]]--
 
 f.texture = f:CreateTexture()
 f.texture:SetAllPoints(f)
@@ -31,6 +36,24 @@ f.Text:SetFontObject(GameFontHighlight)
 f.Text:SetPoint("TOPLEFT", 8,-8)
 f.Text:SetJustifyH("LEFT")
 f.Text:SetText("NAME : DUNGEON : ROLE\n")
+
+local resizeButton = CreateFrame("Button", nil, f)
+resizeButton:SetSize(16, 16)
+resizeButton:SetPoint("BOTTOMRIGHT")
+resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+ 
+--[[
+resizeButton:SetScript("OnMouseDown", function(self, button)
+    f:StartSizing("BOTTOMRIGHT")
+    f:SetUserPlaced(true)
+end)
+ 
+resizeButton:SetScript("OnMouseUp", function(self, button)
+    f:StopMovingOrSizing()
+end)
+]]-- Commented out until resizing with minresize is fixed
 
 function UpdateDungeon()
     local table = f.Text:GetText()
