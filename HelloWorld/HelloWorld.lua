@@ -2,10 +2,11 @@ T = {}
 T_length = 0
 Dungeon_interest = {}
 Role_interest = {}
-LFM = {"LFM", "LF1", "LF2", "LF1M", "LF2M", "LF"}
+LFM = {"LFM", "LF1", "LF2", "LF1M", "LF2M", "LF "}
 DPS = {"DD", "DPS", "DMG"}
 Tank = {"TANK"}
 Heal = {"HEAL", "HEALER"}
+Delim = {"%s","$","$p"}
 
 local f = CreateFrame("Frame", "LFMFrame", UIParent, "BackdropTemplate")
 f:SetSize(250,170)
@@ -24,7 +25,7 @@ f:SetMovable(true)
 f:RegisterForDrag("LeftButton")
 f:SetUserPlaced(true)
 f:SetResizable(true)
-f:SetResizeBounds(200,130,400,400)
+f:SetResizeBounds(200,60,300,300)
 --[[ Old coloring of window, obsolete
 f.texture = f:CreateTexture()
 f.texture:SetAllPoints(f)
@@ -72,13 +73,25 @@ resizeButton:SetScript("OnMouseUp", function(self, button)
 end)
 ]]-- Commented out until resizing with minresize is fixed
 
-function UpdateDungeon()
-    local table = f.Text:GetText()
-    for k, v in pairs(T) do
-        table = table..k.." : "..v.."\n"
+function UpdateDungeon(playerName, info)
+    if GetWindowSize() then
+        local table = f.Text:GetText()
+        local playerNameTrimmed = string.gsub(playerName, "-Stitches", "")
+        local row = playerNameTrimmed.." : "..string.upper(info)
+        table = table .."\n"..row
+        f.Text:SetText(table)
     end
-    T = {}
-    f.Text:SetText(table)
+end
+
+
+function GetWindowSize()
+    local enoughSpace = true
+    local windowSize = f:GetHeight()
+    local fontHeight = f.Text:GetStringHeight()
+    if windowSize-fontHeight < 15 then
+        enoughSpace = false
+    end
+    return enoughSpace
 end
 
 function f:OnEvent(event, ...)
@@ -95,31 +108,35 @@ function PrintInfo()
     print("All Commands: !info\nList current Dungeons/Roles: !list\nAdd Dungeon: !d *name*\nAdd Role: !r *name*\nClear LFM: !LFMclear\nClear Dungeons: !dclear\nClear Roles: !rclear\nSet role: !DPS/!TANK/!HEAL\nHide: !hide\nShow: !show")
 end
 
-function f:CHAT_MSG_CHANNEL(event, text, playerName)
+function PatternMatch(interest)
 
+end
+
+function f:CHAT_MSG_CHANNEL(event, text, playerName)
     if T_length < 9 then
         local fin = false
         for l = 1, #LFM do
             if string.find(string.upper(text), LFM[l]) then
                 local info = ""
                 for i = 1, #Dungeon_interest do
-                    if string.find(string.upper(text), Dungeon_interest[i]) then
-                        info = Dungeon_interest[i]
-                        for j = 1, #Role_interest do
-                            if string.find(string.upper(text), string.upper(Role_interest[j])) then
-                                info = info.." : "..Role_interest[j]
-                                local playerNameTrimmed = string.gsub(playerName, "-Stitches", "")
-                                T[playerNameTrimmed] = string.upper(info)
-                                T_length = T_length + 1
-                                UpdateDungeon()
-                                fin = true
-                                break
+                    for d = 1, #Delim do
+                        if string.find(string.upper(text), Dungeon_interest[i]..Delim[d]) then
+                            print(Dungeon_interest[i]..Delim[d])
+                            info = Dungeon_interest[i]
+                            for j = 1, #Role_interest do
+                                if string.find(string.upper(text), string.upper(Role_interest[j])) then
+                                    info = info.." : "..Role_interest[j]
+                                    T_length = T_length + 1
+                                    UpdateDungeon(playerName, info)
+                                    fin = true
+                                    break
+                                end
                             end
+                            break
                         end
-                        break
-                    end
-                    if fin then
-                        break
+                        if fin then
+                            break
+                        end
                     end
                 end
                 break
@@ -181,6 +198,16 @@ function f:CHAT_MSG_SAY(event, text)
     if string.upper(text) == "!INFO" then
         PrintInfo()
     end
+    if string.upper(text) == "!LEN" then
+        local fontHeight = f.Text:GetStringHeight()
+        print(fontHeight)
+    end
+    if string.upper(text) == "!HEIGHT" then
+        local winHeight = f:GetHeight()
+        print(winHeight)
+    end
+    
+    
 end
 
 
