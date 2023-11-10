@@ -6,7 +6,7 @@ LFM = {"LFM", "LF1", "LF2", "LF1M", "LF2M", "LF "}
 DPS = {"DD", "DPS", "DMG"}
 Tank = {"TANK"}
 Heal = {"HEAL", "HEALER"}
-Delim = {"%s","$","$p"}
+Delim = {"%s","$","[&!?,./%-_()=*]"}
 
 local f = CreateFrame("Frame", "LFMFrame", UIParent, "BackdropTemplate")
 f:SetSize(250,170)
@@ -115,16 +115,35 @@ end
 function f:CHAT_MSG_CHANNEL(event, text, playerName)
     if T_length < 9 then
         local fin = false
+        local fin2 = false
         for l = 1, #LFM do
             if string.find(string.upper(text), LFM[l]) then
                 local info = ""
                 for i = 1, #Dungeon_interest do
                     for d = 1, #Delim do
-                        if string.find(string.upper(text), Dungeon_interest[i]..Delim[d]) then
-                            print(Dungeon_interest[i]..Delim[d])
-                            info = Dungeon_interest[i]
-                            for j = 1, #Role_interest do
-                                if string.find(string.upper(text), string.upper(Role_interest[j])) then
+                        for dt = 1, #Delim do
+                            if string.find(string.upper(text), Delim[d]..Dungeon_interest[i]..Delim[dt]) then
+                                info = Dungeon_interest[i]
+                                fin2 = true
+                                break
+                            end
+                        end
+                    end
+                    if fin2 then
+                        break
+                    end
+                end
+                if fin2 then
+                    print("WHAT")
+                    for j = 1, #Role_interest do
+                        for d = 1, #Delim do
+                            for dt = 1, #Delim do
+                                local t = string.upper(text)
+                                local rd = Delim[dt]..Role_interest[j]..Delim[d]
+                                print("--TEXT--\n".. t)
+                                print("--Role + Delim--\n".. rd)
+                                print("--ARE THEY SAME?\n".. t == rd)
+                                if string.find(string.upper(text), Delim[dt]..Role_interest[j]..Delim[d]) then
                                     info = info.." : "..Role_interest[j]
                                     T_length = T_length + 1
                                     UpdateDungeon(playerName, info)
@@ -132,14 +151,12 @@ function f:CHAT_MSG_CHANNEL(event, text, playerName)
                                     break
                                 end
                             end
-                            break
                         end
                         if fin then
                             break
                         end
                     end
                 end
-                break
             end
             if fin then
                 break
